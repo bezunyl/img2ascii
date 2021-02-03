@@ -108,4 +108,3 @@ result_draw.text((0, 0), result_text, fill = (0, 0, 0), spacing = -5, stroke_wid
 
 result_img.show()
 result_img.save("./results/%s.jpg"%(FILE))
-
