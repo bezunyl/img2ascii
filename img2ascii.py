@@ -1,6 +1,11 @@
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import math
+import sys
+import getopt
 
+FILE = "rufus"
+
+# DEFINITIONS
 class Pixel:
     def __init__(self, x, y):
         self.x = x
@@ -22,8 +27,20 @@ CHARS = {
     0.9: ".",
     1.0: " "
 }
+"""
+argv = sys.argv[1:]
 
-img = Image.open("./assets/rufus.jpg")
+try:
+    opts, args = getopt.getopt(argv, "f:")
+
+except:
+    print("No file given. Use -f to specify an image.")
+
+for opt, arg in opts:
+    if opt in ["-f"]:
+        FILE = arg
+"""
+img = Image.open("./assets/%s.jpg"%(FILE))
 
 cluster_size = 2
 cluster_w = cluster_size
@@ -78,8 +95,17 @@ for i in range(rows):
         result_col += CHARS[luma[i * cols + j]]
     result.append(result_col)
 
-result = "\n".join(result)
+result_text = "\n".join(result)
 
-with open("./results/result.txt", "w") as F:
-    F.write(result)
+with open("./results/%s.txt"%(FILE), "w") as F:
+    F.write(result_text)
     F.close()
+
+result_img = Image.new("RGB", (int(round(img.size[0] * (6/cluster_size), 0)), int(round(img.size[1] * (6/cluster_size), 0))), color = (255, 255, 255))
+result_draw = ImageDraw.Draw(result_img)
+#result_font = ImageFont.truetype("./assets/fonts/consola", 12)
+result_draw.text((0, 0), result_text, fill = (0, 0, 0), spacing = -5, stroke_width = 30)
+
+result_img.show()
+result_img.save("./results/%s.jpg"%(FILE))
+
